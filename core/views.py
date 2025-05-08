@@ -54,6 +54,7 @@ def project_list(request):
     projects = Project.objects.filter(is_approved=True)
     return render(request, 'project_list.html', {'projects': projects})
 
+@login_required
 def home(request):
     projects = Project.objects.filter(is_approved=True)  # Récupère seulement les projets validés
     return render(request, 'project_list.html', {'projects': projects})
@@ -405,5 +406,13 @@ def rate_project(request, project_id):
         form = RatingForm(instance=rating_instance)
 
     return render(request, 'rate_project.html', {'form': form, 'project': project})
+
+from django.shortcuts import redirect
+
+def index(request):
+    if request.user.is_authenticated:
+        return redirect('home')  # ou vers dashboard
+    return redirect('login')
+
 
 
