@@ -407,12 +407,4 @@ def rate_project(request, project_id):
 
     return render(request, 'rate_project.html', {'form': form, 'project': project})
 
-from django.shortcuts import redirect
-
-def index(request):
-    if request.user.is_authenticated:
-        return redirect('project_list')  # ou vers dashboard
-    return redirect('login')
-
-
 

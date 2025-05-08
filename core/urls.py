@@ -1,13 +1,13 @@
 from django.urls import path, include
 from core.views import home
 from . import views
-from .views import project_list, create_project, project_detail,investor_dashboard, entrepreneur_dashboard, custom_login, signup, upload_kyc, kyc_pending, logout_view, update_profile, update_profile, investment, rate_project, index
+from .views import project_list, create_project, project_detail,investor_dashboard, entrepreneur_dashboard, custom_login, signup, upload_kyc, kyc_pending, logout_view, update_profile, update_profile, investment, rate_project
 from django.contrib.auth.views import LoginView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', home, name='home'),
     path("signup/", signup, name="signup"),
     path("login/", custom_login, name="login"),
     path("upload-kyc/", upload_kyc, name="upload_kyc"),
