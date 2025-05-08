@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <h2>{{ project.entrepreneur.username }}</h2>
+    <p>Soumis le : {{ project.created_at|date:"d M Y" }}</p>
+
+    {% if project.entrepreneur.profile_picture %}
+      <img src="{{ project.entrepreneur.profile_picture.url }}" alt="Photo de profil" style="width:100px; height:100px; border-radius:50%;">
+    {% else %}
+      <img src="/media/images/Default-Profile-Picture-Download-PNG-Image.png" alt="Photo de profil par défaut" style="width:100px; height:100px; border-radius:50%;">
+    {% endif %}
+  </div>
+
+  <h1>{{ project.name }}</h1>
+  {% if project.image %}
+  <img src="{{ project.image.url }}" class="card-img-top" alt="Image du projet">
+  {% endif %}
+  {% if user.is_authenticated and user.role == "investisseur" %}
+    <a href="{% url 'investment' project.id %}" class="btn btn-success">Investir</a>
+  {% endif %}
+  {% if user.is_authenticated %}
+    <a href="{% url 'rate_project' project.id %}" class="btn btn-warning mt-3">Noter ce projet ⭐</a>
+{% endif %}
+
+
+  <p><strong>Description:</strong> {{ project.description }}</p>
+  <p><strong>Montant recherché:</strong> {{ project.amount_needed }} FCFA</p>
+  <p><strong>Montant collecté :</strong> {{ project.amount_collected }} FCFA</p>  
+  <!-- Barre de progression -->
+  <!-- <div class="progress mt-3" style="height: 25px;">
+    <div class="progress-bar progress-bar-striped bg-success" 
+        role="progressbar" 
+        style="width: {{ project.progress_percentage }}%;"
+        aria-valuenow="{{ project.progress_percentage }}" 
+        aria-valuemin="0" 
+        aria-valuemax="100">
+        {{ project.progress_percentage|floatformat:0 }}%
+    </div>
+  </div> -->
+  <p><strong>Statut:</strong> {% if project.is_approved %} ✅ Approuvé {% else %} ⏳ En attente {% endif %}</p>
+
+  {% if project.document %}
+    <p><strong>Documentation:</strong> 
+      <a href="{{ project.document.url }}" class="btn btn-primary" download>Télécharger 📄</a>
+    </p>
+  {% else %}
+    <p>Aucune documentation disponible.</p>
+  {% endif %}
+  
+  <!-- comments of project -->
+  <h3 class="mt-5">Avis et Notes</h3>
+
+  {% if project.ratings.all %}
+      <div class="list-group">
+          {% for rating in project.ratings.all %}
+              <div class="list-group-item">
+                  <div class="d-flex align-items-center">
+                      {% if rating.user.profile_picture %}
+                          <img src="{{ rating.user.profile_picture.url }}" alt="Photo de profil" style="width:50px; height:50px; border-radius:50%;" class="me-3">
+                      {% else %}
+                          <img src="/media/images/Default-Profile-Picture-Download-PNG-Image.png" alt="Photo de profil par défaut" style="width:50px; height:50px; border-radius:50%;" class="me-3">
+                      {% endif %}
+                      <div>
+                          <h6 class="mb-0">{{ rating.user.username }}</h6>
+                          <small class="text-muted">{{ rating.created_at|date:"d M Y H:i" }}</small>
+                      </div>
+                  </div>
+                  
+                  <!-- Affichage des étoiles -->
+                  <div class="mt-2">
+                      {% for i in "12345"|make_list %}
+                          {% if forloop.counter <= rating.stars %}
+                              <span class="text-warning">&#9733;</span>
+                          {% else %}
+                              <span class="text-muted">&#9733;</span>
+                          {% endif %}
+                      {% endfor %}
+                  </div>
+  
+                  <!-- Affichage du commentaire -->
+                  {% if rating.comment %}
+                      <p class="mt-2">{{ rating.comment }}</p>
+                  {% endif %}
+              </div>
+          {% endfor %}
+      </div>
+  {% else %}
+      <p class="text-muted">Aucun avis pour ce projet pour le moment.</p>
+  {% endif %}
+  
+
+  
+{% endblock %}
